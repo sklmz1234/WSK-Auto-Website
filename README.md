@@ -1,3 +1,9 @@
+# WSK-Auto-Website
+
+Optimized and upgraded based on the independent development project gosk.
+
+---
+
 # gosk — Go 全栈电商系统（个人学习项目）
 
 > 由后台管理平台起步、逐步演进为全栈电商项目：  
