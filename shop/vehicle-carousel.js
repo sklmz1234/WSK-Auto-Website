@@ -16,7 +16,6 @@ export function createVehicleCarousel(root) {
   const holdDuration = 3000;
   const slideDuration = 450;
   let paused = reducedMotion.matches;
-  let hovered = false;
   let focused = false;
   let touching = false;
   let visible = true;
@@ -31,7 +30,7 @@ export function createVehicleCarousel(root) {
     return viewport.clientWidth;
   }
   function canRun() {
-    return !paused && !hovered && !focused && !touching && visible && !doc.hidden
+    return !paused && !focused && !touching && visible && !doc.hidden
       && loopWidth() > viewport.clientWidth;
   }
   function stop() {
@@ -114,20 +113,10 @@ export function createVehicleCarousel(root) {
     if (direction > 0 && viewport.scrollLeft >= width) viewport.scrollLeft -= width;
     viewport.scrollBy({ left: direction * step, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
   }
-  listen(viewport, 'pointerover', event => {
-    if (event.target.tagName === 'IMG') { hovered = true; sync(); }
-  });
-  listen(viewport, 'pointerout', event => {
-    if (event.target.tagName === 'IMG') {
-      hovered = Boolean(event.relatedTarget?.closest?.('.vehicle-carousel-viewport img'));
-      sync();
-    }
-  });
   listen(viewport, 'click', event => {
     const repeated = event.target.closest('[data-carousel-select]');
     if (repeated) group.querySelector(`[data-select="${repeated.dataset.carouselSelect}"]`)?.click();
   });
-  listen(viewport, 'pointerleave', () => { hovered = false; sync(); });
   listen(root, 'focusin', event => { focused = event.target.matches(':focus-visible'); sync(); });
   listen(root, 'focusout', event => {
     if (!root.contains(event.relatedTarget)) { focused = false; sync(); }
