@@ -21,14 +21,6 @@
 .vehicle-carousel-group .selected .gallery-caption{border-bottom-color:var(--accent-blue)}
 .vehicle-carousel-group .selected .gallery-detail{color:var(--accent-blue)}
 .vehicle-carousel-group .vehicle-choice:focus-visible{outline-color:var(--accent-blue);outline-offset:-3px}
-.gallery-footer{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:24px}
-.gallery-count{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--muted)}
-.gallery-controls{display:flex;gap:8px}
-.gallery-controls button{width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:transparent;font-family:Arial,sans-serif;font-size:19px;display:grid;place-items:center;transition:background .2s,color .2s,border-color .2s}
-.gallery-controls button:hover{background:#181b24;border-color:#181b24;color:#fff}
-.gallery-controls button:focus-visible{outline-color:var(--accent-blue);outline-offset:3px}
-.gallery-controls [data-carousel-toggle]{font-size:14px}
-.gallery-controls button:disabled{cursor:default;opacity:.35;background:transparent;color:var(--muted);border-color:var(--line)}
 .is-static .vehicle-carousel-group[aria-hidden=true]{display:none}
 @media(max-width:680px){
   .vehicle-selection{padding-top:40px;padding-bottom:28px}
@@ -42,6 +34,4 @@
   .vehicle-carousel-group .gallery-caption{padding:15px 0 10px;gap:12px}
   .vehicle-carousel-group .gallery-title{font-size:24px}
   .gallery-detail{font-size:10px;gap:12px}
-  .gallery-footer{margin-top:16px}
 }
-@media(prefers-reduced-motion:reduce){.gallery-controls button{transition:none}}

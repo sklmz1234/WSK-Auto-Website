@@ -1,10 +1,8 @@
-// Native horizontal scrolling keeps touch, keyboard and manual controls available.
+// Slow right-to-left autoplay; native scrolling and arrow keys remain available.
 export function createVehicleCarousel(root) {
   const viewport = root.querySelector('.vehicle-carousel-viewport');
   const track = root.querySelector('.vehicle-carousel-track');
   const group = root.querySelector('.vehicle-carousel-group');
-  const toggle = root.querySelector('[data-carousel-toggle]');
-  const count = root.querySelector('[data-carousel-count]');
   const win = root.ownerDocument.defaultView;
   const doc = root.ownerDocument;
   const reducedMotion = win.matchMedia('(prefers-reduced-motion: reduce)');
@@ -12,6 +10,7 @@ export function createVehicleCarousel(root) {
   let duplicate;
   let frame = 0;
   let lastTime = null;
+  let scrollPosition = 0;
   let paused = reducedMotion.matches;
   let hovered = false;
   let focused = false;
@@ -37,20 +36,16 @@ export function createVehicleCarousel(root) {
     frame = 0;
     if (!canRun()) { lastTime = null; return; }
     if (lastTime !== null) {
-      // 32px/s: slow enough to browse; cap elapsed time after a suspended frame.
-      viewport.scrollLeft = (viewport.scrollLeft + Math.min(time - lastTime, 64) * 0.032) % loopWidth();
-    }
+      // Accumulate fractional pixels so slow motion also works on high-refresh displays.
+      scrollPosition = (scrollPosition + Math.min(time - lastTime, 64) * 0.024) % loopWidth();
+      viewport.scrollLeft = scrollPosition;
+    } else scrollPosition = viewport.scrollLeft;
     lastTime = time;
     frame = win.requestAnimationFrame(tick);
   }
   function sync() {
     const scrollable = loopWidth() > viewport.clientWidth;
     root.classList.toggle('is-static', !scrollable);
-    root.querySelector('[data-carousel-prev]').disabled = !scrollable;
-    root.querySelector('[data-carousel-next]').disabled = !scrollable;
-    toggle.setAttribute('aria-label', paused ? '播放自动轮播' : '暂停自动轮播');
-    toggle.setAttribute('aria-pressed', String(paused));
-    toggle.querySelector('span').textContent = paused ? '▶' : 'Ⅱ';
     if (canRun()) {
       if (!frame) frame = win.requestAnimationFrame(tick);
     } else stop();
@@ -72,8 +67,6 @@ export function createVehicleCarousel(root) {
     duplicate.querySelectorAll('[data-gallery]').forEach(card => card.removeAttribute('data-gallery'));
     duplicate.querySelectorAll('img').forEach(image => image.alt = '');
     track.append(duplicate);
-    const total = [...group.children].filter(card => !card.hidden).length;
-    count.textContent = `${String(total).padStart(2, '0')} IMAGES`;
     if (reset) viewport.scrollLeft = 0;
     sync();
   }
@@ -88,13 +81,21 @@ export function createVehicleCarousel(root) {
     if (direction > 0 && viewport.scrollLeft >= width) viewport.scrollLeft -= width;
     viewport.scrollBy({ left: direction * step, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
   }
-  listen(viewport, 'pointerenter', () => { hovered = true; sync(); });
+  listen(viewport, 'pointerover', event => {
+    if (event.target.tagName === 'IMG') { hovered = true; sync(); }
+  });
+  listen(viewport, 'pointerout', event => {
+    if (event.target.tagName === 'IMG') {
+      hovered = Boolean(event.relatedTarget?.closest?.('.vehicle-carousel-viewport img'));
+      sync();
+    }
+  });
   listen(viewport, 'click', event => {
     const repeated = event.target.closest('[data-carousel-select]');
     if (repeated) group.querySelector(`[data-select="${repeated.dataset.carouselSelect}"]`)?.click();
   });
   listen(viewport, 'pointerleave', () => { hovered = false; sync(); });
-  listen(root, 'focusin', () => { focused = true; sync(); });
+  listen(root, 'focusin', event => { focused = event.target.matches(':focus-visible'); sync(); });
   listen(root, 'focusout', event => {
     if (!root.contains(event.relatedTarget)) { focused = false; sync(); }
   });
@@ -103,14 +104,6 @@ export function createVehicleCarousel(root) {
   listen(win, 'pointercancel', () => { touching = false; sync(); });
   listen(doc, 'visibilitychange', sync);
   listen(reducedMotion, 'change', event => { paused = event.matches; sync(); });
-  listen(toggle, 'click', () => {
-    paused = !paused;
-    // An explicit Play request also works while the Play button keeps focus.
-    if (!paused && doc.activeElement === toggle) focused = false;
-    sync();
-  });
-  listen(root.querySelector('[data-carousel-prev]'), 'click', () => move(-1));
-  listen(root.querySelector('[data-carousel-next]'), 'click', () => move(1));
   listen(viewport, 'keydown', event => {
     if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       event.preventDefault();
