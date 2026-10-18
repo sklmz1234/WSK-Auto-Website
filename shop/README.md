@@ -8,7 +8,7 @@ npm ci
 npm run dev
 ```
 
-打开 http://localhost:5174 。官网展示不依赖 Go 后端启动。
+打开 http://localhost:15174 。官网展示不依赖 Go 后端启动。
 
 ```sh
 npm run build
@@ -24,7 +24,7 @@ npm run preview
 
 车型与品牌历程为概念展示。预约表单不发送、不保存数据。字体外链不可用时使用本地回退字体。
 
-Vite 保留 /api 代理，默认目标 http://127.0.0.1:8080，可用 API_PROXY_TARGET 覆盖；当前官网不调用电商接口。详见 [接口对应说明](../docs/frontend-api-map.md)。
+Vite 保留 /api 代理，默认目标 http://127.0.0.1:18090，可用 WSK_API_PROXY_TARGET 覆盖；当前官网不调用电商接口。详见 [接口对应说明](../docs/frontend-api-map.md)。
 
 ## 首页品牌影片
 

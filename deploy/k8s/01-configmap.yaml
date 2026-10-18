@@ -8,11 +8,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: app-config
-  namespace: ecom
+  namespace: wsk-auto
 data:
   MYSQL_HOST: "mysql"
   MYSQL_PORT: "3306"
-  MYSQL_DB_NAME: "ecom_admin"
+  MYSQL_DB_NAME: "wsk_auto"
   # product-service 读缓存（11-redis.yaml），Service 名即 DNS，同 MYSQL_HOST 机制
   REDIS_ADDR: "redis:6379"
   GRPC_CLIENT_USER_SERVICE_ADDR: "user-service:9001"
@@ -24,3 +24,12 @@ data:
   # 消息中间件（阶段 6）：5.x gRPC 客户端连 Proxy 8081，Service 名即 DNS。
   # order-service 的 relay 投递端与 product-service 的消费端都走这条。
   ROCKETMQ_PROXY_ADDR: "rocketmq:8081"
+  APP_NAME: "wsk-auto"
+  SERVER_API_GATEWAY_HTTP_PORT: "8080"
+  SERVER_USER_SERVICE_GRPC_PORT: "9001"
+  SERVER_PRODUCT_SERVICE_GRPC_PORT: "9002"
+  SERVER_ORDER_SERVICE_GRPC_PORT: "9003"
+  ELASTICSEARCH_ADDR: "http://127.0.0.1:19210"
+  ELASTICSEARCH_INDEX: "wsk_products"
+  # 当前 K8s 清单未部署 ES/Jaeger；ES 不可用时沿用后端 MySQL 搜索降级。
+  TELEMETRY_ENABLED: "false"

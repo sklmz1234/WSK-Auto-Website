@@ -1,6 +1,6 @@
-# go-ecom-admin 本地编排：MySQL + 2 个 gRPC 服务 + 1 个 HTTP 网关。
-# 前置：cp .env.example .env（compose 自动读取同目录 .env 做变量替换）。
-name: go-ecom-admin
+# wsk-auto 本地编排：MySQL + 3 个 gRPC 服务 + 1 个 HTTP 网关。
+# 使用 docker compose --env-file .env.wsk -p wsk-auto；不要复制旧项目的 .env。
+name: wsk-auto
 
 # Go 服务共用的 MySQL 连接环境变量。
 # Viper AutomaticEnv（pkg/config）用它们覆盖 configs/config.yaml 里的
@@ -8,20 +8,26 @@ name: go-ecom-admin
 x-mysql-env: &mysql-env
   MYSQL_HOST: mysql
   MYSQL_PORT: "3306"
-  MYSQL_USER: ${MYSQL_USER:-ecom}
-  MYSQL_PASSWORD: ${MYSQL_PASSWORD:-ecom123}
-  MYSQL_DB_NAME: ${MYSQL_DB_NAME:-ecom_admin}
+  MYSQL_USER: ${WSK_MYSQL_USER:-wsk}
+  MYSQL_PASSWORD: ${WSK_MYSQL_PASSWORD:-wsk-local-db}
+  MYSQL_DB_NAME: ${WSK_MYSQL_DB_NAME:-wsk_auto}
+
+x-runtime-env: &runtime-env
+  SERVER_API_GATEWAY_HTTP_PORT: "8080"
+  SERVER_USER_SERVICE_GRPC_PORT: "9001"
+  SERVER_PRODUCT_SERVICE_GRPC_PORT: "9002"
+  SERVER_ORDER_SERVICE_GRPC_PORT: "9003"
 
 services:
   mysql:
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
-      MYSQL_DATABASE: ${MYSQL_DB_NAME:-ecom_admin}
+      MYSQL_ROOT_PASSWORD: ${WSK_MYSQL_ROOT_PASSWORD:-wsk-local-root}
+      MYSQL_DATABASE: ${WSK_MYSQL_DB_NAME:-wsk_auto}
       # 业务专用账号（mysql 镜像首次初始化时自动创建并授权），
       # 应用不拿 root 连库是基本规范。
-      MYSQL_USER: ${MYSQL_USER:-ecom}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-ecom123}
+      MYSQL_USER: ${WSK_MYSQL_USER:-wsk}
+      MYSQL_PASSWORD: ${WSK_MYSQL_PASSWORD:-wsk-local-db}
       TZ: Asia/Shanghai
     # 和 Go 服务容器的 TZ 保持一致，时间戳才不会差 8 小时
     # 和 Go 服务一致的自愈策略：Docker daemon 重启后所有容器被并行拉起，
@@ -35,7 +41,7 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     ports:
-      - "${MYSQL_HOST_PORT:-3306}:3306"
+      - "127.0.0.1:${WSK_MYSQL_HOST_PORT:-13316}:3306"
     healthcheck:
       # 用 root 真正执行一次 SQL 而不是 mysqladmin ping：
       # 首次初始化期间（root 密码还没设好）登录会失败，
@@ -53,7 +59,7 @@ services:
   elasticsearch:
     build:
       context: ./deploy/elasticsearch
-    image: go-ecom-admin/elasticsearch:${TAG:-latest}
+    image: wsk-auto/elasticsearch:${WSK_TAG:-latest}
     environment:
       discovery.type: single-node
       xpack.security.enabled: "false"
@@ -62,7 +68,7 @@ services:
     # 同 mysql/redis：daemon 重启后自愈，理由见 mysql 服务注释。
     restart: unless-stopped
     ports:
-      - "${ES_HOST_PORT:-9200}:9200"
+      - "127.0.0.1:${WSK_ES_HOST_PORT:-19210}:9200"
     volumes:
       # 必须挂数据卷：ES 数据默认存在容器可写层，容器一旦被 recreate
       # （compose up 重建依赖链等）索引就全丢——而重建后没有任何组件会
@@ -119,7 +125,7 @@ services:
 
   # gRPC 接入层：5.x 客户端（rocketmq-clients/golang）只和它说话，
   # 由它翻译给内部的 remoting 协议。8081 同时映射到宿主机——
-  # 宿主机裸 go run 的进程走 127.0.0.1:8081（config.yaml 默认值）。
+  # 宿主机裸 go run 的进程走 127.0.0.1:18091（config.yaml 默认值）。
   rocketmq-proxy:
     image: apache/rocketmq:5.3.2
     environment:
@@ -129,13 +135,13 @@ services:
     command: sh mqproxy
     restart: unless-stopped
     ports:
-      - "${ROCKETMQ_PROXY_HOST_PORT:-8081}:8081"
+      - "127.0.0.1:${WSK_ROCKETMQ_PROXY_HOST_PORT:-18091}:8081"
     depends_on:
       - rocketmq-broker
 
   # RocketMQ 控制台（可选，不随 make up 启动，用 make mq-up 后单独
   # `docker compose --profile tools up -d rocketmq-dashboard`）。看 topic/
-  # 消息轨迹/DLQ 用，面试演示利器。8080 被网关占了，宿主机端口用 18080。
+  # 消息轨迹/DLQ 用，面试演示利器。8080 被网关占了，宿主机端口用 28090。
   rocketmq-dashboard:
     image: apacherocketmq/rocketmq-dashboard:latest
     profiles: ["tools"]
@@ -143,7 +149,7 @@ services:
       TZ: Asia/Shanghai
       JAVA_OPTS: "-Drocketmq.namesrv.addr=rocketmq-nameserver:9876"
     ports:
-      - "${ROCKETMQ_DASHBOARD_HOST_PORT:-18080}:8080"
+      - "127.0.0.1:${WSK_ROCKETMQ_DASHBOARD_HOST_PORT:-28090}:8080"
     depends_on:
       - rocketmq-nameserver
     restart: unless-stopped
@@ -153,10 +159,10 @@ services:
       context: .
       args:
         SERVICE: user-service
-    image: go-ecom-admin/user-service:${TAG:-latest}
+    image: wsk-auto/user-service:${WSK_TAG:-latest}
     environment:
-      <<: *mysql-env
-      JWT_SECRET: ${JWT_SECRET:-dev-only-change-me-in-production}
+      <<: [*mysql-env, *runtime-env]
+      JWT_SECRET: ${WSK_JWT_SECRET:-wsk-local-only-change-before-production}
       TELEMETRY_OTLP_ENDPOINT: jaeger:4317
       TZ: Asia/Shanghai
     depends_on:
@@ -169,9 +175,9 @@ services:
       context: .
       args:
         SERVICE: product-service
-    image: go-ecom-admin/product-service:${TAG:-latest}
+    image: wsk-auto/product-service:${WSK_TAG:-latest}
     environment:
-      <<: *mysql-env
+      <<: [*mysql-env, *runtime-env]
       # 缓存地址，覆盖 config.yaml 里的 127.0.0.1:6379
       REDIS_ADDR: redis:6379
       # 搜索引擎地址（阶段 5A），覆盖 config.yaml 里的 http://127.0.0.1:9200
@@ -197,9 +203,9 @@ services:
       context: .
       args:
         SERVICE: order-service
-    image: go-ecom-admin/order-service:${TAG:-latest}
+    image: wsk-auto/order-service:${WSK_TAG:-latest}
     environment:
-      <<: *mysql-env
+      <<: [*mysql-env, *runtime-env]
       # order-service 是 gRPC 客户端（调 product-service 扣库存），
       # 容器网络内用 service 名寻址。
       GRPC_CLIENT_PRODUCT_SERVICE_ADDR: product-service:9002
@@ -220,17 +226,18 @@ services:
       context: .
       args:
         SERVICE: api-gateway
-    image: go-ecom-admin/api-gateway:${TAG:-latest}
+    image: wsk-auto/api-gateway:${WSK_TAG:-latest}
     environment:
+      <<: *runtime-env
       # 容器网络内用 service 名寻址，替代 yaml 里的 127.0.0.1
       GRPC_CLIENT_USER_SERVICE_ADDR: user-service:9001
       GRPC_CLIENT_PRODUCT_SERVICE_ADDR: product-service:9002
       GRPC_CLIENT_ORDER_SERVICE_ADDR: order-service:9003
-      JWT_SECRET: ${JWT_SECRET:-dev-only-change-me-in-production}
+      JWT_SECRET: ${WSK_JWT_SECRET:-wsk-local-only-change-before-production}
       TELEMETRY_OTLP_ENDPOINT: jaeger:4317
       TZ: Asia/Shanghai
     ports:
-      - "${GATEWAY_HOST_PORT:-8080}:8080"
+      - "127.0.0.1:${WSK_GATEWAY_HOST_PORT:-18090}:8080"
     depends_on:
       - user-service
       - product-service
@@ -243,10 +250,10 @@ services:
       context: .
       args:
         SERVICE: seed
-    image: go-ecom-admin/seed:${TAG:-latest}
+    image: wsk-auto/seed:${WSK_TAG:-latest}
     profiles: ["tools"]
     environment:
-      <<: *mysql-env
+      <<: [*mysql-env, *runtime-env]
       # seed 重置库表后要清商品读缓存（否则旧缓存里的数据没有 owner_id，
       # 归属校验会误判 403），所以需要 Redis 地址。
       REDIS_ADDR: redis:6379
@@ -261,12 +268,13 @@ services:
       elasticsearch:
         condition: service_healthy
 
-  # product-service 读缓存（阶段 2C）。不暴露宿主机端口——只有容器网络内的
-  # product-service 需要连它，攻击面最小化（和 K8s 里不给 gateway 挂 db 凭证同理）。
+  # product-service 读缓存；宿主机调试端口仅绑定回环地址。
   redis:
     image: redis:7-alpine
     environment:
       TZ: Asia/Shanghai
+    ports:
+      - "127.0.0.1:${WSK_REDIS_HOST_PORT:-16389}:6379"
     command: redis-server --appendonly yes
     # 同 mysql：daemon 重启后自愈，理由见上方 mysql 服务的注释。
     restart: unless-stopped
@@ -283,16 +291,16 @@ services:
   # 生产用 jaeger collector + ES/Cassandra 后端独立部署），内存存储重启即丢
   # ——本地这无所谓，反而省得清数据。
   # 4317 (OTLP gRPC) 同时映射到宿主机：服务在容器网络内走 jaeger:4317，
-  # 宿主机裸 go run 的进程走 127.0.0.1:4317（config.yaml 默认值）。
-  # UI 在 http://localhost:16686。
+  # 宿主机裸 go run 的进程走 127.0.0.1:14327（config.yaml 默认值）。
+  # UI 在 http://localhost:26696。
   jaeger:
     image: jaegertracing/all-in-one:1.62.0
     environment:
       COLLECTOR_OTLP_ENABLED: "true"
       TZ: Asia/Shanghai
     ports:
-      - "${JAEGER_UI_HOST_PORT:-16686}:16686"
-      - "4317:4317"
+      - "127.0.0.1:${WSK_JAEGER_UI_HOST_PORT:-26696}:16686"
+      - "127.0.0.1:${WSK_JAEGER_OTLP_HOST_PORT:-14327}:4317"
     restart: unless-stopped
 
   # 指标后端（阶段 2D 下半程）：pull 模式，每 5s 主动抓三个服务的
@@ -305,21 +313,21 @@ services:
     volumes:
       - ./deploy/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
-      - "${PROM_HOST_PORT:-9090}:9090"
+      - "127.0.0.1:${WSK_PROM_HOST_PORT:-19090}:9090"
     restart: unless-stopped
 
   # 面板层：provisioning 自动配好 Prometheus/Jaeger 数据源并加载
   # deploy/grafana/provisioning/dashboards/ 下的面板 JSON，容器起来即开箱。
-  # 默认账号 admin / admin（GF_SECURITY_ADMIN_PASSWORD 可在 .env 覆盖）。
+  # 本地账号 admin；密码通过 WSK_GRAFANA_ADMIN_PASSWORD 配置。
   grafana:
     image: grafana/grafana:12.0.0
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${WSK_GRAFANA_ADMIN_PASSWORD:-wsk-local-grafana}
       TZ: Asia/Shanghai
     volumes:
       - ./deploy/grafana/provisioning:/etc/grafana/provisioning:ro
     ports:
-      - "${GRAFANA_HOST_PORT:-3000}:3000"
+      - "127.0.0.1:${WSK_GRAFANA_HOST_PORT:-13010}:3000"
     depends_on:
       - prometheus
     restart: unless-stopped

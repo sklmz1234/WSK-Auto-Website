@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 // proxy 与管理台 frontend/vite.config.js 完全同一套：/api 转发到网关。
 const apiProxy = {
   '/api': {
-    target: process.env.API_PROXY_TARGET || 'http://127.0.0.1:8080',
+    target: process.env.WSK_API_PROXY_TARGET || 'http://127.0.0.1:18090',
     changeOrigin: true,
   },
 };
@@ -21,8 +21,8 @@ export default defineConfig({
     },
   },
   server: {
-    // 5173 被管理台 frontend/ 占用，C 端商城用 5174，两个 dev server 可并行。
-    port: 5174,
+    // WSK 官网专用端口，冲突即退出。
+    port: 15174,
     strictPort: true,
     proxy: apiProxy,
     // cloudflared 隧道演示：访客经 *.trycloudflare.com 访问本机 dev server，
@@ -30,7 +30,7 @@ export default defineConfig({
     allowedHosts: ['.trycloudflare.com'],
   },
   preview: {
-    port: 5174,
+    port: 15174,
     strictPort: true,
     proxy: apiProxy,
   },

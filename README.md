@@ -9,7 +9,7 @@
 | `shop/` | WSK 官网：首页、品牌故事、车型筛选、两车对比和预约演示 |
 | `frontend/` | 原商品管理台，独立运行，与现有商品接口配套 |
 | `cmd/`、`internal/`、`pkg/`、`proto/` | 原 Go API 网关、用户/商品/订单服务与基础库 |
-| `deploy/`、`docker-compose.yml` | 原基础设施与可观测性配置 |
+| `deploy/`、`docker-compose.yml` | WSK 独立部署与可观测性配置 |
 | `docs/frontend-api-map.md` | 已有接口与汽车官网需求的对应、缺口和后续建议 |
 | `docs/legacy-project.md` | 原项目说明与架构记录，保留供迁移参考 |
 
@@ -24,7 +24,7 @@ npm ci
 npm run dev
 ```
 
-打开 http://localhost:5174 。官网展示不需要先启动数据库或 Go 服务。
+打开 http://localhost:15174 。官网展示不需要先启动数据库或 Go 服务。
 
 ```sh
 npm run build
@@ -35,7 +35,7 @@ npm run preview
 
 ## 原后端和管理台
 
-后端保持原有启动方式：复制 `.env.example` 为 `.env`，运行 `docker compose up -d --build`；网关地址 http://localhost:8080 ，健康接口 `/healthz`。
+后端业务保留，部署配置已隔离：复制 `.env.example` 为 `.env.wsk`，运行 `docker compose --env-file .env.wsk -p wsk-auto up -d --build`；网关地址 http://localhost:18090 ，健康接口 `/healthz`。
 
 管理台可单独运行：
 
@@ -45,10 +45,14 @@ npm ci
 npm run dev
 ```
 
-管理台默认 http://localhost:5173 ，仍用于旧商品业务。官网开发和预览保留 `/api` 到网关的代理，可通过 `API_PROXY_TARGET` 指定其他后端。
+管理台默认 http://localhost:15173 ，仍用于旧商品业务。官网开发和预览保留 `/api` 到网关的代理，可通过 `WSK_API_PROXY_TARGET` 指定其他后端。
 
 ## 当前集成范围
 
 已有接口覆盖账户、商品、购物车与订单；尚无车型、门店、试驾预约和品牌内容接口。官网目前使用本地概念资料，预约不上传或保存个人信息。没有将试驾预约接到电商下单接口。
 
 后续接口改造以 [接口对应说明](docs/frontend-api-map.md) 为起点。车型与品牌历史为创意展示，图片使用用户车标和 AI 概念视觉；图片提示词记录在 `docs/image-prompts.json` 与 `docs/design-notes.md`。
+
+## 部署隔离
+
+Docker 项目与镜像前缀、K8s 命名空间统一为 `wsk-auto`，数据卷独立创建。不要沿用旧项目 `.env` 或挂载旧数据卷。端口、凭证配置和验证步骤见 [部署说明](docs/deployment-isolation.md)。
