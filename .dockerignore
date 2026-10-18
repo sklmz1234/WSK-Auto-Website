@@ -4,6 +4,7 @@
 .idea
 .workbuddy
 frontend
+shop
 docker-compose.yml
 Makefile
 .env
