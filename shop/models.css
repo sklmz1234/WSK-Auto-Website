@@ -10,11 +10,11 @@
 .vehicle-carousel-viewport::-webkit-scrollbar{display:none}
 .vehicle-carousel-viewport:focus-visible{outline:2px solid var(--accent-blue);outline-offset:6px}
 .vehicle-carousel-track{display:flex;width:max-content}
-.vehicle-carousel-group{display:flex;flex:none;align-items:stretch;gap:24px;padding-right:24px;width:max-content}
-.vehicle-carousel-group>.vehicle-card{flex:0 0 auto;width:clamp(340px,58vw,800px);border:0;background:transparent;position:relative}
+.vehicle-carousel-group{display:flex;flex:none;align-items:stretch;gap:0;padding-right:0;width:max-content}
+.vehicle-carousel-group>.vehicle-card{flex:0 0 auto;width:var(--gallery-slide-width,88vw);border:0;background:transparent;position:relative}
 .vehicle-carousel-group>.vehicle-card[hidden]{display:none}
 .vehicle-carousel-group .vehicle-choice{padding:0;position:relative;background:transparent}
-.vehicle-carousel-group .vehicle-choice>img,.vehicle-carousel-group>.inspiration-card>img{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;display:block;background:#e1e0db}
+.vehicle-carousel-group .vehicle-choice>img,.vehicle-carousel-group>.inspiration-card>img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block;background:#e1e0db}
 .vehicle-carousel-group .gallery-caption{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:19px 0 12px;border-bottom:1px solid var(--line);text-align:left}
 .vehicle-carousel-group .gallery-title{font-size:clamp(22px,2.3vw,32px);font-weight:400;line-height:1.4;margin:0;letter-spacing:.5px}
 .gallery-detail{display:inline-flex;align-items:center;gap:24px;font-family:Arial,'Microsoft YaHei',sans-serif;font-size:12px;color:var(--muted);white-space:nowrap}
@@ -28,10 +28,15 @@
   .vehicle-selection .eyebrow{font-size:10px;letter-spacing:1px}
   .vehicle-selection .small-note{margin:0;font-size:10px}
   .vehicle-carousel-viewport{margin-top:22px}
-  .vehicle-carousel-group{gap:16px;padding-right:16px}
-  .vehicle-carousel-group>.vehicle-card{width:80vw;min-width:0}
-  .vehicle-carousel-group .vehicle-choice>img,.vehicle-carousel-group>.inspiration-card>img{aspect-ratio:4/3;object-fit:cover}
+  .vehicle-carousel-group{gap:0;padding-right:0}
+  .vehicle-carousel-group>.vehicle-card{width:var(--gallery-slide-width,88vw);min-width:0}
+  .vehicle-carousel-group .vehicle-choice>img,.vehicle-carousel-group>.inspiration-card>img{aspect-ratio:16/9;object-fit:cover}
   .vehicle-carousel-group .gallery-caption{padding:15px 0 10px;gap:12px}
   .vehicle-carousel-group .gallery-title{font-size:24px}
   .gallery-detail{font-size:10px;gap:12px}
 }
+
+/* The introduction pairs the headline with the supplied lineup photograph. */
+.collection-intro .section-heading{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);align-items:center;gap:40px}
+.collection-lineup{display:block;width:100%;height:auto;aspect-ratio:1024/572;object-fit:cover}
+@media(max-width:680px){.collection-intro .section-heading{grid-template-columns:1fr;gap:24px}}

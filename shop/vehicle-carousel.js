@@ -12,6 +12,7 @@ export function createVehicleCarousel(root) {
   let lastTime = null;
   let elapsed = 0;
   let transition = null;
+  let slideWidth = 0;
   const holdDuration = 3000;
   const slideDuration = 450;
   let paused = reducedMotion.matches;
@@ -27,8 +28,7 @@ export function createVehicleCarousel(root) {
 
   function loopWidth() { return group.getBoundingClientRect().width; }
   function cardStep() {
-    const first = [...group.children].find(card => !card.hidden);
-    return first ? first.getBoundingClientRect().width + (parseFloat(win.getComputedStyle(group).gap) || 0) : 0;
+    return viewport.clientWidth;
   }
   function canRun() {
     return !paused && !hovered && !focused && !touching && visible && !doc.hidden
@@ -63,6 +63,16 @@ export function createVehicleCarousel(root) {
     frame = win.requestAnimationFrame(tick);
   }
   function sync() {
+    const width = viewport.clientWidth;
+    if (width > 0 && width !== slideWidth) {
+      const index = slideWidth ? Math.round(viewport.scrollLeft / slideWidth) : 0;
+      stop();
+      elapsed = 0;
+      transition = null;
+      slideWidth = width;
+      root.style.setProperty('--gallery-slide-width', `${width}px`);
+      viewport.scrollLeft = index * width;
+    }
     const scrollable = loopWidth() > viewport.clientWidth;
     root.classList.toggle('is-static', !scrollable);
     if (canRun()) {
