@@ -9,7 +9,7 @@
 <body>
 <header class="header">
   <a class="brand" href="#" aria-label="WSK 汽车首页"><span class="logo-crop"><img src="assets/brand.jpg" alt="WSK 汽车车标"></span><span class="brand-word">WSK</span></a>
-  <a class="about-link" href="about.html">了解我们 <span>↗</span></a><nav aria-label="主导航"><a href="models.html">探索车型</a><a href="#design">设计与灵感</a><a href="#experience">品牌体验</a></nav>
+  <nav aria-label="主导航"><a href="about.html">了解我们</a><a href="models.html">探索车型</a><a href="#design">设计与灵感</a><a href="#experience">品牌体验</a></nav>
   <button class="header-book" data-book>预约体验 <span>↗</span></button>
   <button class="menu" aria-label="打开导航" aria-expanded="false">☰</button>
 </header>
@@ -27,10 +27,19 @@
     <div class="model-panel" id="model-panel" role="tabpanel" aria-labelledby="tab-gt"><div class="model-visual"><img src="assets/model-gt.png" alt="WSK GT 概念车型外观" loading="lazy"><span class="concept-tag">DESIGN CONCEPT / 概念意向</span></div><div class="model-info"><span class="eyebrow" id="model-category">ELECTRIC GRAND TOURER</span><h3 id="model-name">WSK GT</h3><p id="model-description">锋芒，藏于从容。<br>流动的车身线条，延伸对远方的想象。</p><div class="model-traits" id="model-traits"><span>流线美学</span><span>纯电构想</span><span>自在驾享</span></div><button class="text-link" id="model-details">走近 WSK GT <span>↗</span></button></div></div>
   </section>
   <section class="design section" id="design"><div class="design-copy"><span class="eyebrow">02 / DESIGNED TO FEEL</span><h2>少一些喧嚣。<br>多一分本真。</h2><p>一笔流动的线条，是我们的设计起点。<br>从车标到车身，让每一处表达都恰到好处。</p><button class="text-link" id="design-details">发现 WSK 设计哲学 <span>↗</span></button><div class="design-foot">PURE FORM. FREE SPIRIT.</div></div><div class="brand-art"><img src="assets/brand.jpg" loading="lazy" alt="流动的银色金属 WSK 品牌标志"><span>THE ART OF MOVEMENT</span></div></section>
-  <section class="experience section" id="experience"><div><span class="eyebrow">03 / YOUR NEXT CHAPTER</span><h2>下一次心动，<br>从这里出发。</h2><p>让屏幕里的向往，成为触手可及的体验。</p><button class="button primary" data-book>开启专属体验 <span>↗</span></button></div><div class="experience-right"><span class="large-w">WSK</span><div class="experience-note"><span class="orange-dot"></span> 自由的想象，始终在线<br><small>EXPLORE WHAT MOVES YOU.</small></div></div></section>
+  <section class="experience section" id="experience">
+    <div class="experience-copy"><span class="eyebrow">03 / YOUR NEXT CHAPTER</span><h2>下一次心动，<br>从这里出发。</h2><p>让屏幕里的向往，成为触手可及的体验。</p><button class="button primary" id="preview-film" aria-controls="brand-film-player" aria-expanded="false">预览风采 <span aria-hidden="true">▷</span></button><p class="film-error" id="film-error" role="status" hidden></p></div>
+    <div class="experience-right"><span class="large-w">WSK</span><div class="experience-note"><span class="orange-dot"></span> 自由的想象，始终在线<br><small>EXPLORE WHAT MOVES YOU.</small></div></div>
+    <div class="brand-film-player" id="brand-film-player" role="region" aria-label="WSK 品牌影片播放器" hidden>
+      <video id="brand-film" controls playsinline preload="none" poster="assets/hero.png" aria-label="WSK 15秒品牌展示片"><source src="assets/wsk-brand-film.mp4" type="video/mp4">你的浏览器不支持视频播放。<a href="assets/wsk-brand-film.mp4">打开品牌影片</a></video>
+      <span class="film-loading" id="film-loading" role="status">正在加载影片…</span>
+      <button class="film-close" id="film-close" type="button" aria-label="关闭影片并返回介绍">返回介绍 <span aria-hidden="true">×</span></button>
+    </div>
+  </section>
 </main>
 <footer><a class="brand footer-brand" href="#"><span class="logo-crop"><img src="assets/brand.jpg" alt="WSK 汽车"></span><span class="brand-word">WSK</span></a><div class="footer-links"><a href="models.html">探索车型</a><a href="about.html">了解 WSK</a><button data-book>联系与体验 ↗</button></div><div class="footer-bottom"><span>© 2026 WSK. 自由，自有方向。</span><span>品牌概念展示 · 车型与视觉均为创意演示，不代表量产产品。</span><a href="#">返回顶部 ↑</a></div></footer>
 <dialog id="booking"><button class="close" aria-label="关闭弹窗">×</button><span class="eyebrow">START YOUR JOURNEY</span><h2>预约你的下一程</h2><p>这是展示用预约流程，填写的信息仅用于当前页面演示。</p><form id="booking-form"><label>意向车型<select name="model"><option>WSK GT · 纯电轿跑</option><option>WSK X · 全能 SUV</option><option>WSK S · 都市先锋</option></select></label><label>你的称呼<input name="name" required maxlength="30" autocomplete="name" placeholder="如何称呼你"></label><label>联系电话<input name="phone" type="tel" required pattern="[0-9+ ()-]{7,20}" autocomplete="tel" placeholder="请输入联系电话"></label><label class="consent"><input type="checkbox" required><span>我了解此为概念展示，信息不会发送或保存。</span></label><button class="button primary" type="submit">确认体验意向 <span>↗</span></button></form><div id="booking-success" hidden role="status"><span class="success-mark">✓</span><h3>下一程，值得期待。</h3><p>体验意向已在本页确认。本演示不会发送或保存个人信息。</p><button class="button outline" id="done">返回探索 ↗</button></div></dialog>
 <dialog id="story"><button class="close" aria-label="关闭弹窗">×</button><span class="eyebrow" id="story-eyebrow">WSK DESIGN</span><h2 id="story-title"></h2><p id="story-copy"></p><button class="button primary" id="story-book">预约体验 <span>↗</span></button></dialog>
 <script type="module" src="app.js"></script>
+<script type="module" src="film.js"></script>
 </body></html>
