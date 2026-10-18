@@ -65,6 +65,9 @@ video.addEventListener('playing', () => {
   section.classList.add('has-video');
 });
 video.addEventListener('error', () => playbackFailed(attempt));
+video.addEventListener('ended', () => {
+  if (section.classList.contains('is-video')) returnToIntroduction();
+});
 close.addEventListener('click', returnToIntroduction);
 section.addEventListener('keydown', event => {
   if (event.key === 'Escape' && section.classList.contains('is-video')) {
