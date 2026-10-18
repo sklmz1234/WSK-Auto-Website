@@ -1,4 +1,4 @@
-// Slow right-to-left autoplay; native scrolling and arrow keys remain available.
+// Hold each image for three seconds, then slide left to the next card.
 export function createVehicleCarousel(root) {
   const viewport = root.querySelector('.vehicle-carousel-viewport');
   const track = root.querySelector('.vehicle-carousel-track');
@@ -10,7 +10,10 @@ export function createVehicleCarousel(root) {
   let duplicate;
   let frame = 0;
   let lastTime = null;
-  let scrollPosition = 0;
+  let elapsed = 0;
+  let transition = null;
+  const holdDuration = 3000;
+  const slideDuration = 450;
   let paused = reducedMotion.matches;
   let hovered = false;
   let focused = false;
@@ -23,6 +26,10 @@ export function createVehicleCarousel(root) {
   }
 
   function loopWidth() { return group.getBoundingClientRect().width; }
+  function cardStep() {
+    const first = [...group.children].find(card => !card.hidden);
+    return first ? first.getBoundingClientRect().width + (parseFloat(win.getComputedStyle(group).gap) || 0) : 0;
+  }
   function canRun() {
     return !paused && !hovered && !focused && !touching && visible && !doc.hidden
       && loopWidth() > viewport.clientWidth;
@@ -35,11 +42,23 @@ export function createVehicleCarousel(root) {
   function tick(time) {
     frame = 0;
     if (!canRun()) { lastTime = null; return; }
-    if (lastTime !== null) {
-      // Accumulate fractional pixels so slow motion also works on high-refresh displays.
-      scrollPosition = (scrollPosition + Math.min(time - lastTime, 64) * 0.024) % loopWidth();
-      viewport.scrollLeft = scrollPosition;
-    } else scrollPosition = viewport.scrollLeft;
+    if (lastTime !== null) elapsed += Math.max(0, time - lastTime);
+    if (!transition && elapsed >= holdDuration) {
+      const step = cardStep();
+      const from = viewport.scrollLeft;
+      transition = { from, to: (Math.floor((from + 1) / step) + 1) * step };
+      elapsed = 0;
+    }
+    if (transition) {
+      const progress = Math.min(elapsed / slideDuration, 1);
+      const eased = progress * progress * (3 - 2 * progress);
+      viewport.scrollLeft = transition.from + (transition.to - transition.from) * eased;
+      if (progress === 1) {
+        viewport.scrollLeft = transition.to % loopWidth();
+        transition = null;
+        elapsed = 0;
+      }
+    }
     lastTime = time;
     frame = win.requestAnimationFrame(tick);
   }
@@ -51,6 +70,9 @@ export function createVehicleCarousel(root) {
     } else stop();
   }
   function refresh({ reset = false } = {}) {
+    stop();
+    elapsed = 0;
+    transition = null;
     duplicate?.remove();
     duplicate = group.cloneNode(true);
     duplicate.setAttribute('aria-hidden', 'true');
@@ -71,11 +93,12 @@ export function createVehicleCarousel(root) {
     sync();
   }
   function move(direction) {
-    const first = [...group.children].find(card => !card.hidden);
-    if (!first) return;
+    const step = cardStep();
+    if (!step) return;
     stop();
+    elapsed = 0;
+    transition = null;
     const width = loopWidth();
-    const step = first.getBoundingClientRect().width + (parseFloat(win.getComputedStyle(group).gap) || 0);
     // Normalize before manual movement, including stepping backwards from the start.
     if (direction < 0 && viewport.scrollLeft < step) viewport.scrollLeft += width;
     if (direction > 0 && viewport.scrollLeft >= width) viewport.scrollLeft -= width;
