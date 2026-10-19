@@ -2,6 +2,10 @@
 
 汽车品牌概念官网，基于原 gosk 项目逐步迭代。新官网已替换原对外商城，原 Go 电商后端与商品管理台暂时保留。
 
+## 前端样式与新窗口交接
+
+继续开发前请阅读 [WSK 前端开发样式规范](docs/frontend-style-guide.md)、仓库根目录的 [AGENTS.md](AGENTS.md) 和 [shop/AGENTS.md](shop/AGENTS.md)。规范整理了原 Agentic skill 与用户后续确认的 WSK 样式；新窗口应从本仓库目录开始，不能仅依赖旧聊天记忆。
+
 ## 项目结构
 
 | 目录 | 用途 |
