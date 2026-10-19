@@ -6,7 +6,7 @@
 
 | 目录 | 用途 |
 | --- | --- |
-| `shop/` | WSK 官网：首页、品牌故事、车型筛选、两车对比和预约演示 |
+| `shop/` | WSK 官网：首页、品牌故事、车型筛选、两车对比、选车购买和预约演示 |
 | `frontend/` | 原商品管理台，独立运行，与现有商品接口配套 |
 | `cmd/`、`internal/`、`pkg/`、`proto/` | 原 Go API 网关、用户/商品/订单服务与基础库 |
 | `deploy/`、`docker-compose.yml` | WSK 独立部署与可观测性配置 |
@@ -31,7 +31,7 @@ npm run build
 npm run preview
 ```
 
-构建输出 `shop/dist/`，可部署至静态托管服务。首页 `index.html`，品牌页 `about.html`，车型页 `models.html`。完整说明见 [shop/README.md](shop/README.md)。
+构建输出 `shop/dist/`，可部署至静态托管服务。首页 `index.html`，品牌页 `about.html`，车型页 `models.html`，选车页 `purchase.html`。完整说明见 [shop/README.md](shop/README.md)。
 
 ## 原后端和管理台
 

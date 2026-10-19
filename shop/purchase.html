@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="选择你的 WSK。浏览 GT、X、S 三款概念车型，了解基础信息并体验选车流程。">
+  <meta name="theme-color" content="#181b24">
+  <title>选车购买 — WSK · World Super Kinetic</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="purchase.css">
+</head>
+<body class="purchase-page">
+  <header class="header">
+    <a class="brand" href="index.html" aria-label="WSK 汽车首页"><span class="logo-crop"><img src="assets/brand.jpg" alt="WSK 车标"></span><span class="brand-word">WSK</span></a>
+    <nav aria-label="主导航"><a href="about.html">了解我们</a><a href="models.html">探索车型</a><a href="index.html#design">设计与灵感</a><a href="index.html#experience">品牌体验</a></nav>
+    <a class="header-book" href="purchase.html" aria-current="page">选车购买 <span aria-hidden="true">↗</span></a>
+    <button class="menu" aria-label="打开导航" aria-expanded="false">☰</button>
+  </header>
+  <main>
+    <section class="purchase-intro section" aria-labelledby="purchase-title">
+      <div class="purchase-topline"><span class="eyebrow"><span class="orange-dot"></span>FIND YOUR WSK</span><a href="models.html" class="purchase-back">← 返回车型</a></div>
+      <div class="purchase-heading"><div><h1 id="purchase-title">下一程，由你选择。</h1><p>从喜欢的车型开始，找到与你同频的座驾。</p></div><span class="purchase-demo-note">概念车型 · 选购演示</span></div>
+    </section>
+
+    <div class="purchase-workspace">
+      <section class="purchase-configurator" aria-label="选择与了解车型">
+        <fieldset class="purchase-model-picker">
+          <legend><span class="eyebrow">01 / 选择车型</span></legend>
+          <div class="purchase-options">
+            <label class="purchase-model-option is-selected"><input type="radio" name="model" value="gt" checked><img src="assets/model-gt.png" alt="" width="1536" height="1024"><span class="purchase-option-name">WSK GT</span><span class="purchase-option-kind">纯电轿跑</span><span class="purchase-choice-state">已选择</span></label>
+            <label class="purchase-model-option"><input type="radio" name="model" value="x"><img src="assets/model-x.png" alt="" width="1536" height="1024"><span class="purchase-option-name">WSK X</span><span class="purchase-option-kind">家庭 SUV</span><span class="purchase-choice-state">选择车型</span></label>
+            <label class="purchase-model-option"><input type="radio" name="model" value="s"><img src="assets/model-s.png" alt="" width="1536" height="1024"><span class="purchase-option-name">WSK S</span><span class="purchase-option-kind">都市掀背</span><span class="purchase-choice-state">选择车型</span></label>
+          </div>
+        </fieldset>
+
+        <div class="purchase-visual">
+          <div class="purchase-visual-top"><span class="eyebrow" id="purchase-category">ELECTRIC GRAND TOURER</span><span class="eyebrow">WSK / DESIGN CONCEPT</span></div>
+          <img id="purchase-image" src="assets/model-gt.png" alt="珍珠银 WSK GT 概念轿跑" width="1536" height="1024" fetchpriority="high">
+          <div class="purchase-visual-bottom"><span id="purchase-tagline">锋芒，藏于从容。</span><span class="purchase-paint"><i id="purchase-paint-dot" aria-hidden="true"></i><span id="purchase-paint">珍珠银</span></span></div>
+        </div>
+
+        <section class="purchase-specifications" aria-labelledby="specifications-title">
+          <div class="purchase-spec-heading"><h2 id="specifications-title">简单了解，更好选择。</h2><a id="purchase-details" href="models.html?model=gt">探索这款车型 <span aria-hidden="true">↗</span></a></div>
+          <dl class="purchase-spec-grid" id="purchase-specs"><div><dt>车身形态</dt><dd>流线轿跑</dd></div><div><dt>动力定位</dt><dd>纯电概念</dd></div><div><dt>出行灵感</dt><dd>长途漫游</dd></div><div><dt>外观配色</dt><dd>珍珠银</dd></div><div><dt>设计主张</dt><dd>优雅 · 从容</dd></div><div><dt>造型语言</dt><dd>低矮车身 / 舒展比例</dd></div></dl>
+          <p class="purchase-spec-note">以上为概念设计信息；量产配置、续航与性能参数暂未公布。</p>
+        </section>
+      </section>
+
+      <aside class="purchase-summary" aria-labelledby="summary-title">
+        <span class="eyebrow">YOUR NEXT CHAPTER</span>
+        <h2 id="summary-title">你的选择。</h2>
+        <div class="purchase-summary-model"><h3 id="purchase-name">WSK GT</h3><span id="purchase-body">流线轿跑</span></div>
+        <p class="purchase-description" id="purchase-description">舒展的车身比例与流动的线条，为每一段远行，留下从容的姿态。</p>
+        <dl class="purchase-summary-facts"><div><dt>外观配色</dt><dd id="summary-paint">珍珠银</dd></div><div><dt>车型定位</dt><dd id="summary-journey">长途漫游</dd></div><div><dt>购买方式</dt><dd>暂未开放销售</dd></div></dl>
+        <div class="purchase-price"><span>车辆售价</span><strong>待公布</strong></div>
+        <button class="button primary purchase-confirm" id="purchase-confirm" type="button">确认选车 <span aria-hidden="true">↗</span></button>
+        <p class="purchase-boundary">本页为选购流程演示，不生成订单，不收取费用。</p>
+        <p id="purchase-status" class="purchase-status" role="status" aria-live="polite" hidden></p>
+        <a class="purchase-summary-back" href="models.html">还想再看看？返回车型展示 →</a>
+      </aside>
+    </div>
+    <section class="purchase-endnote"><span class="eyebrow">ONE EMBLEM. MANY POSSIBILITIES.</span><p>每一种向往，都有自己的座驾。</p></section>
+  </main>
+  <footer>
+    <a class="brand" href="index.html"><span class="logo-crop"><img src="assets/brand.jpg" alt="WSK 车标"></span><span class="brand-word">WSK</span></a>
+    <div class="footer-links"><a href="models.html">探索车型</a><a href="about.html">了解我们</a><a href="purchase.html" aria-current="page">选车购买 ↗</a></div>
+    <div class="footer-bottom"><span>© 2026 WSK · World Super Kinetic</span><span>自由，自有方向。 / 品牌概念展示</span><a href="#">返回顶部 ↑</a></div>
+  </footer>
+  <dialog class="purchase-review" id="purchase-review" aria-labelledby="review-title" aria-describedby="review-boundary">
+    <button class="close" id="review-close" type="button" aria-label="关闭选车确认">×</button>
+    <span class="eyebrow">02 / 确认意向</span>
+    <h2 id="review-title">下一程，<br>就从这里开始。</h2>
+    <img id="review-image" src="assets/model-gt.png" alt="珍珠银 WSK GT 概念车" width="1536" height="1024">
+    <div class="purchase-review-choice"><strong id="review-name">WSK GT</strong><span id="review-paint">珍珠银</span></div>
+    <p id="review-boundary">你将确认本页的选车意向。此为前端演示，不会下单、付款或保存个人信息。</p>
+    <button class="button primary" id="review-confirm" type="button">确认选车意向 <span aria-hidden="true">↗</span></button>
+    <button class="purchase-review-edit" id="review-edit" type="button">返回修改</button>
+  </dialog>
+  <script type="module" src="purchase.js"></script>
+</body>
+</html>

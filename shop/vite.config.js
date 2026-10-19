@@ -17,6 +17,7 @@ export default defineConfig({
         home: fileURLToPath(new URL('./index.html', import.meta.url)),
         about: fileURLToPath(new URL('./about.html', import.meta.url)),
         models: fileURLToPath(new URL('./models.html', import.meta.url)),
+        purchase: fileURLToPath(new URL('./purchase.html', import.meta.url)),
       },
     },
   },
