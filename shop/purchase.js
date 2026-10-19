@@ -1,4 +1,4 @@
-import { catalog } from './vehicle-data.js';
+import { purchaseCatalog as catalog } from './vehicle-data.js';
 
 const swatches = { gt: '#c8cbcb', x: '#28443b', s: '#aebfcc' };
 const initialModel = new URLSearchParams(location.search).get('model');
@@ -9,13 +9,14 @@ const confirmButton = document.querySelector('#purchase-confirm');
 const status = document.querySelector('#purchase-status');
 
 function paintName(vehicle) { return vehicle.paint.split(' · ')[0]; }
+function modelImage(key) { return catalog[key].image || `assets/model-${key}.png`; }
 function selectModel(key, updateUrl = true) {
   if (!Object.hasOwn(catalog, key)) return;
   selected = key;
   const vehicle = catalog[key];
   const paint = paintName(vehicle);
   const image = document.querySelector('#purchase-image');
-  image.src = `assets/model-${key}.png`;
+  image.src = modelImage(key);
   image.alt = `${paint} ${vehicle.name} 概念车`;
   document.querySelector('#purchase-name').textContent = vehicle.name;
   document.querySelector('#purchase-category').textContent = vehicle.category;
@@ -23,12 +24,24 @@ function selectModel(key, updateUrl = true) {
   document.querySelector('#purchase-description').textContent = vehicle.description;
   document.querySelector('#purchase-body').textContent = vehicle.body;
   document.querySelector('#purchase-paint').textContent = paint;
-  document.querySelector('#purchase-paint-dot').style.backgroundColor = swatches[key];
+  document.querySelector('#purchase-paint-dot').style.backgroundColor = vehicle.swatch || swatches[key];
   document.querySelector('#summary-paint').textContent = paint;
   document.querySelector('#summary-journey').textContent = vehicle.journey;
-  document.querySelector('#purchase-details').href = `models.html?model=${key}`;
+  const details = document.querySelector('#purchase-details');
+  details.href = vehicle.image || `models.html?model=${key}`;
+  details.textContent = vehicle.image ? '查看完整图片 ↗' : '探索这款车型 ↗';
+  if (vehicle.image) {
+    details.target = '_blank';
+    details.rel = 'noopener';
+  } else {
+    details.removeAttribute('target');
+    details.removeAttribute('rel');
+  }
+  document.querySelector('#purchase-spec-note').textContent = vehicle.image
+    ? '此车型名称为页面展示用，外观信息依据图片整理；动力、售价与性能参数待公布。'
+    : '以上为概念设计信息；量产配置、续航与性能参数暂未公布。';
   document.querySelector('#purchase-specs').replaceChildren(...[
-    ['车身形态', vehicle.body], ['动力定位', '纯电概念'], ['出行灵感', vehicle.journey],
+    ['车身形态', vehicle.body], ['动力定位', vehicle.powertrain || '纯电概念'], ['出行灵感', vehicle.journey],
     ['外观配色', paint], ['设计主张', vehicle.design], ['造型语言', vehicle.detail],
   ].map(([label, value]) => {
     const row = document.createElement('div');
@@ -66,7 +79,7 @@ confirmButton.addEventListener('click', () => {
   document.querySelector('#review-name').textContent = vehicle.name;
   document.querySelector('#review-paint').textContent = paintName(vehicle);
   const image = document.querySelector('#review-image');
-  image.src = `assets/model-${selected}.png`;
+  image.src = modelImage(selected);
   image.alt = `${paintName(vehicle)} ${vehicle.name} 概念车`;
   dialog.showModal();
 });

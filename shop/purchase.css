@@ -43,7 +43,7 @@
 .purchase-summary{position:sticky;top:24px;background:var(--purchase-panel);padding:40px 32px}
 .purchase-summary>.eyebrow{color:var(--muted);font-size:10px}
 .purchase-summary h2{font-size:28px;font-weight:400;margin:16px 0 32px;line-height:1.5}
-.purchase-summary-model{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.purchase-summary-model{display:flex;justify-content:space-between;align-items:baseline;gap:8px 16px;flex-wrap:wrap}
 .purchase-summary-model h3{font-size:44px;font-weight:400;margin:0;line-height:1.2;letter-spacing:-1px}
 .purchase-summary-model>span{font:12px/1.6 var(--purchase-font);color:var(--muted)}
 .purchase-description{font-size:14px;line-height:2;color:var(--muted);margin:20px 0 28px}
