@@ -9,7 +9,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: order-service
-  namespace: ecom
+  namespace: wsk-auto
 spec:
   selector:
     app: order-service
@@ -22,7 +22,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: order-service
-  namespace: ecom
+  namespace: wsk-auto
   labels:
     app: order-service
 spec:
@@ -37,7 +37,7 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: go-ecom-admin/order-service:TAG
+          image: wsk-auto/order-service:TAG
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef: { name: app-config }

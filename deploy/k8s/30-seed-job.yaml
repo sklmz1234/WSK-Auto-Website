@@ -6,7 +6,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: seed
-  namespace: ecom
+  namespace: wsk-auto
 spec:
   backoffLimit: 1 # 失败重试一次就够：失败多半是 MySQL 还没 ready
   template:
@@ -14,7 +14,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: seed
-          image: go-ecom-admin/seed:TAG
+          image: wsk-auto/seed:TAG
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef: { name: app-config }

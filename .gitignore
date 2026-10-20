@@ -29,3 +29,8 @@ shop/.vite/
 node_modules/
 shop/dist/
 frontend/dist/
+
+# WSK local credentials
+.env.wsk
+__pycache__/
+*.py[cod]

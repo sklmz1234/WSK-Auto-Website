@@ -1,9 +1,9 @@
-# Namespace：把项目所有资源圈在 ecom 里，不污染集群默认空间。
-# kubectl 常用 -n ecom 指定；集群 DNS 短名解析也依赖它
-# （user-service 全名 = user-service.ecom.svc.cluster.local）。
+# Namespace：把项目所有资源圈在 wsk-auto 里，不污染集群默认空间。
+# kubectl 常用 -n wsk-auto 指定；集群 DNS 短名解析也依赖它
+# （user-service 全名 = user-service.wsk-auto.svc.cluster.local）。
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: ecom
+  name: wsk-auto
   labels:
-    app.kubernetes.io/part-of: go-ecom-admin
+    app.kubernetes.io/part-of: wsk-auto

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# gosk dev stopper - Git Bash entry. Thin wrapper around dev-down.ps1.
+# WSK dev stopper - Git Bash entry. Thin wrapper around dev-down.ps1.
 set -euo pipefail
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

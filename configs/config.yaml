@@ -1,5 +1,5 @@
 app:
-  name: go-ecom-admin
+  name: wsk-auto
   env: dev
 
 log:
@@ -10,10 +10,10 @@ log:
 
 mysql:
   host: 127.0.0.1
-  port: 3306
-  user: root
-  password: root
-  db_name: ecom_admin
+  port: 13316
+  user: wsk
+  password: wsk-local-db
+  db_name: wsk_auto
   charset: utf8mb4
   max_idle_conns: 10
   max_open_conns: 100
@@ -21,7 +21,7 @@ mysql:
 # product-service 读缓存用的 Redis。容器环境里用 REDIS_ADDR 覆盖成 service 名
 
 redis:
-  addr: 127.0.0.1:6379
+  addr: 127.0.0.1:16389
   password: ""
   db: 0
 
@@ -29,44 +29,44 @@ redis:
 # 连不上时 product-service 降级为 MySQL LIKE 搜索（搜索引擎是加速层不是
 # 正确性依赖，和 Redis 缓存同一原则），所以这个地址配错不会让服务起不来。
 elasticsearch:
-  addr: http://127.0.0.1:9200
-  index: products
+  addr: http://127.0.0.1:19210
+  index: wsk_products
 
 # 消息中间件（阶段 6）。5.x gRPC 客户端连的是 Proxy（8081），不是
 # NameServer（9876）。容器环境里用 ROCKETMQ_PROXY_ADDR 覆盖成 service 名。
 # MQ 是投递通道不是正确性依赖：broker 故障时消息滞留 outbox 表退避重试，
 # 链路降级为"延迟变长"而不是"丢消息"。
 rocketmq:
-  proxy_addr: 127.0.0.1:8081
+  proxy_addr: 127.0.0.1:18091
 
 # 开发环境用的默认 secret，生产环境务必通过 JWT_SECRET 环境变量覆盖
 
 jwt:
-  secret: dev-only-change-me-in-production
+  secret: wsk-local-only-change-before-production
   expire_hours: 24
 
 server:
   api_gateway:
-    http_port: 8080
+    http_port: 18090
   user_service:
-    grpc_port: 9001
+    grpc_port: 19001
   product_service:
-    grpc_port: 9002
+    grpc_port: 19002
   order_service:
-    grpc_port: 9003
+    grpc_port: 19003
 
 # api-gateway 作为 gRPC 客户端时，下游服务的拨号地址。
 grpc_client:
-  user_service_addr: 127.0.0.1:9001
-  product_service_addr: 127.0.0.1:9002
-  order_service_addr: 127.0.0.1:9003
+  user_service_addr: 127.0.0.1:19001
+  product_service_addr: 127.0.0.1:19002
+  order_service_addr: 127.0.0.1:19003
 
 # 链路追踪（默认开着：本地最常用的形态是 docker compose 全栈
-# （Jaeger 起在 compose 网络里），宿主机裸 go run 时端口是通的（4317 已映射）。
+# （Jaeger 起在 compose 网络里），宿主机裸 go run 时端口是通的（14327 已映射）。
 # 完全不想起 Jaeger 就 TELEMETRY_ENABLED=false，SDK 不初始化、零开销。
 # sample_ratio 本地 1.0 全采；生产参考值 0.1——全采的成本（存储/网络/噪声）
 # 在生产流量下不可接受，且 ParentBased 采样保证被采到的请求整条链路完整。
 telemetry:
   enabled: true
-  otlp_endpoint: 127.0.0.1:4317
+  otlp_endpoint: 127.0.0.1:14327
   sample_ratio: 1.0

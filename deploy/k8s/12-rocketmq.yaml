@@ -14,7 +14,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: rocketmq
-  namespace: ecom
+  namespace: wsk-auto
 spec:
   selector:
     app: rocketmq
@@ -28,7 +28,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rocketmq
-  namespace: ecom
+  namespace: wsk-auto
 spec:
   replicas: 1
   selector:

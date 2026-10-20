@@ -1,3 +1,5 @@
+> 此文档为原项目历史记录，不适用于 WSK 部署。WSK 使用独立项目名、命名空间、端口及数据，当前命令见 [部署说明](deployment-isolation.md)。
+
 # WSK-Auto-Website
 
 Optimized and upgraded based on the independent development project gosk.

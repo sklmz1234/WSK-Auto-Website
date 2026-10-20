@@ -1,16 +1,16 @@
 
 # 不装控制器的话用端口转发直接访问网关（零依赖）：
-#   kubectl port-forward -n ecom svc/api-gateway 8080:8080
+#   kubectl port-forward -n wsk-auto svc/api-gateway 18090:8080
 # =============================================================================
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: api-gateway
-  namespace: ecom
+  namespace: wsk-auto
 spec:
   ingressClassName: nginx
   rules:
-    - host: ecom.local # 配 hosts 文件：127.0.0.1 ecom.local。本机 port-forward 验证时用 Host 头
+    - host: wsk-auto.local # 配 hosts 文件：127.0.0.1 wsk-auto.local。本机 port-forward 验证时用 Host 头
       http:
         paths:
           - path: /
