@@ -14,3 +14,10 @@
 
 /* Match the header to the 02 design section; no separate logo backplate. */
 .header{background:#181b24;color:#f6f6f1;border-bottom-color:#303746}.header .brand-word{border-left-color:#657084}.header .header-book{border-bottom-color:#9aa5b6}.header nav a:hover,.header nav a[aria-current=page],.models-page .header nav a[aria-current=page]{color:#ffab7a}.header :focus-visible{outline-color:#93c5fd}@media(max-width:680px){.header nav{background:#181b24;border-bottom-color:#303746}}
+
+/* Keep purchasing in the same navigation row as the other destinations. */
+.header nav{margin-left:clamp(32px,6vw,96px);margin-right:auto;gap:clamp(20px,2.6vw,40px)}
+.header nav a{white-space:nowrap}
+.header nav .header-book{margin:0;padding:16px 0;border:0;font:inherit;display:inline-flex;align-items:center;gap:8px}
+.header nav .header-book span{margin-left:0}
+@media(max-width:680px){.header nav{margin:0;gap:8px}.header nav .header-book{align-self:flex-start}}
